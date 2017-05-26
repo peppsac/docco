@@ -215,7 +215,10 @@ if not specified.
           if decl >= 0
               nextParen = section.codeText.indexOf('{\n', decl)
               signature = section.codeText.substr(decl, nextParen - decl)
-              section.docsText = section.docsText.replace('\n', '\n ```js\n ' + signature + '\n```\n')
+              if fnName is path.basename(source, path.extname(source))
+                section.docsText = section.docsText.replace('### ' + fnName + '\n', '### Constructor\n ```js\n ' + signature + '\n```\n')
+              else
+                section.docsText = section.docsText.replace('\n', '\n ```js\n ' + signature + '\n```\n')
         for src, i in config.sources
           name=path.basename(src, path.extname(src))
           re = new RegExp('([^\\[\\w\\*])' + name + '\\*',"g")
