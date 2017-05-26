@@ -199,6 +199,9 @@ if not specified.
         if (source.indexOf('examples') < 0)
           filtering = "<label for='toggle" + i + "' class='toggle-label'>Show/Hide code</label><input type='checkbox' id='toggle" + i + "' class='toggle'/>"
         section.codeHtml = filtering + "<div class='highlight'><pre>#{code}</pre></div>"
+        if source.indexOf('examples') >= 0 && i == sections.length - 1
+          section.codeHtml += '<div id="viewerDiv"></div><script type="text/javascript" src="' + source + '"></script>'
+
         if section.docsText.startsWith('### ')
           endLine = section.docsText.indexOf('\n')
           fnName = section.docsText.substr(4, endLine - 4)
