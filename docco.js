@@ -116,7 +116,7 @@
   };
 
   format = function(source, sections, config) {
-    var code, decl, endLine, filtering, fnName, i, j, language, len, markedOptions, nextParen, results, section, signature;
+    var code, decl, endLine, filtering, fnName, i, j, k, language, len, len1, markedOptions, name, nextParen, re, ref, results, section, signature, src;
     language = getLanguage(source, config);
     markedOptions = {
       smartypants: true
@@ -155,6 +155,13 @@
           signature = section.codeText.substr(decl, nextParen - decl);
           section.docsText = section.docsText.replace('\n', '\n ```js\n ' + signature + '\n```\n');
         }
+      }
+      ref = config.sources;
+      for (i = k = 0, len1 = ref.length; k < len1; i = ++k) {
+        src = ref[i];
+        name = path.basename(src, path.extname(src));
+        re = new RegExp('([^\\[\\w\\*])' + name + '\\*', "g");
+        section.docsText = section.docsText.replace(re, '$1[' + name + '](' + name + '.html)');
       }
       results.push(section.docsHtml = marked(section.docsText));
     }

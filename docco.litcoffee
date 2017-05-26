@@ -207,6 +207,11 @@ if not specified.
               nextParen = section.codeText.indexOf('{\n', decl)
               signature = section.codeText.substr(decl, nextParen - decl)
               section.docsText = section.docsText.replace('\n', '\n ```js\n ' + signature + '\n```\n')
+        for src, i in config.sources
+          name=path.basename(src, path.extname(src))
+          re = new RegExp('([^\\[\\w\\*])' + name + '\\*',"g")
+          section.docsText = section.docsText.replace(re, '$1[' + name + '](' + name + '.html)')
+
         section.docsHtml = marked(section.docsText)
 
 Once all of the code has finished highlighting, we can **write** the resulting
