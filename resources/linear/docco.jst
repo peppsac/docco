@@ -28,22 +28,31 @@
           <h1><%= title %></h1>
         <% } %>
 
-        <% if (sources.length > 1) { %>
+
           <div class="toc">
-            <h3>Table of Contents</h3>
+            <h3>Public API:</h3>
             <ol>
-              <% for (var i=0, l = sources.length; i < l; i++) { %>
-                <% var source = sources[i]; %>
-                <li>
-                  <a class="source" href="<%= path.basename(destination(source)) %>">
-                    <%= path.basename(source) %>
-                  </a>
-                </li>
+              <% for (var i=0, l = sections.length; i < l; i++) { %>
+                <% var section = sections[i].docsHtml; %>
+                <% var previous = 0, index= -1; %>
+                <% while((index = section.indexOf('<h3 id="', previous))>=0) {%>
+                    <li>
+                      <% var end = section.indexOf('">', index); %>
+                      <% previous = index + 8; %>
+                      <% var h4id = section.substr(previous, end - previous); %>
+                      <% previous = section.indexOf('</h3>', end); %>
+                      <% var txt = section.substr(end + 2, previous - end - 2); %>
+                      <a class="source" href="#<%= h4id %>">
+                        <%= txt %>
+                      </a>
+                    </li>
+                <% } %>
               <% } %>
             </ol>
+            <hr/>
           </div>
-        <% } %>
       </div>
+
 
       <% for (var i = 0, l = sections.length; i<l; i++) { %>
         <% var section = sections[i]; %>

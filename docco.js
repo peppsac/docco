@@ -116,7 +116,7 @@
   };
 
   format = function(source, sections, config) {
-    var code, i, j, language, len, markedOptions, results, section;
+    var code, filtering, i, j, language, len, markedOptions, results, section;
     language = getLanguage(source, config);
     markedOptions = {
       smartypants: true
@@ -141,7 +141,11 @@
       section = sections[i];
       code = highlightjs.highlight(language.name, section.codeText).value;
       code = code.replace(/\s+$/, '');
-      section.codeHtml = "<div class='highlight'><pre>" + code + "</pre></div>";
+      filtering = '';
+      if (source.indexOf('examples') < 0) {
+        filtering = "<label for='toggle" + i + "' class='toggle-label'>Show/Hide code</label><input type='checkbox' id='toggle" + i + "' class='toggle'/>";
+      }
+      section.codeHtml = filtering + ("<div class='highlight'><pre>" + code + "</pre></div>");
       results.push(section.docsHtml = marked(section.docsText));
     }
     return results;
