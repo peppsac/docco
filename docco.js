@@ -116,7 +116,7 @@
   };
 
   format = function(source, sections, config) {
-    var code, filtering, i, j, language, len, markedOptions, results, section;
+    var code, decl, endLine, filtering, fnName, i, j, language, len, markedOptions, nextParen, results, section, signature;
     language = getLanguage(source, config);
     markedOptions = {
       smartypants: true
@@ -146,6 +146,16 @@
         filtering = "<label for='toggle" + i + "' class='toggle-label'>Show/Hide code</label><input type='checkbox' id='toggle" + i + "' class='toggle'/>";
       }
       section.codeHtml = filtering + ("<div class='highlight'><pre>" + code + "</pre></div>");
+      if (section.docsText.startsWith('### ')) {
+        endLine = section.docsText.indexOf('\n');
+        fnName = section.docsText.substr(4, endLine - 4);
+        decl = section.codeText.indexOf('function ' + fnName);
+        if (decl >= 0) {
+          nextParen = section.codeText.indexOf('{\n', decl);
+          signature = section.codeText.substr(decl, nextParen - decl);
+          section.docsText = section.docsText.replace('\n', '\n ```js\n ' + signature + '\n```\n');
+        }
+      }
       results.push(section.docsHtml = marked(section.docsText));
     }
     return results;
