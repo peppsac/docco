@@ -1,0 +1,23 @@
+        <div id="filterblock" />
+        <input type="text" id="filterField">
+    </div>
+    <% var groups = new Map(); groups.set('', []); %>
+    <% for (var i=0, l = outputs.length; i < l; i++) { %>
+        <% var source = outputs[i].source; %>
+        <% var folder = source.split('/')[1]; %>
+        <% if (folder == path.basename(source)) folder = ''; %>
+        <% if (!groups.has(folder)) { groups.set(folder, []); } %>
+            <% groups.get(folder).push(outputs[i]); %>
+        <% } %>
+        <% for (var group of groups.keys()) { %>
+            <h4><%= group %></h4>
+            <ul>
+              <% for (var file of groups.get(group)) { %>
+              <li>
+                  <a class="source" href="<%= path.basename(destination(file.source)) %>">
+                    <%= file.title %>
+                </a>
+            </li>
+        <% } %>
+    </ul>
+    <% } %>

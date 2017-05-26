@@ -6,9 +6,15 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
   <link rel="stylesheet" media="all" href="<%= css %>" />
+  <script type="text/javascript" src="./fts_fuzzy_match.js"></script>
+  <script type="text/javascript" src="./itowns.js"></script>
 </head>
 <body>
+      <div class="left-bar">
+      REPLACE_ME_WITH_SIDE_BAR_FILE_CONTENT
+        </div>
   <div class="container">
+
     <div class="page">
 
       <div class="header">
@@ -46,8 +52,42 @@
           <%= section.codeHtml %>
         <% } %>
       <% } %>
-      <div class="fleur">h</div>
-    </div>
   </div>
+<script>
+  var pages = document.getElementsByClassName('source');
+  var defaultText = [];
+  for (var i=0; i<pages.length; i++) {
+    defaultText.push(pages[i].innerHTML);
+}
+var searchText = [];
+for (var i=0; i<pages.length; i++) {
+    searchText.push(pages[i].textContent);
+}
+
+var patternField = document.getElementById('filterField');
+patternField.oninput = onPatternChange;
+
+function onPatternChange() {
+    for (var i=0; i<pages.length; i++) {
+        var r;
+        if (patternField.value.length == 0) {
+            r = [true, null, defaultText[i]];
+        } else {
+            r = fuzzy_match(patternField.value, searchText[i]);
+        }
+
+        if (r[0]) {
+            pages[i].className = pages[i].className.replace('hidden', '');
+            pages[i].innerHTML = r[2];
+        } else {
+            if (pages[i].className.indexOf('hidden') < 0) {
+                pages[i].className += ' hidden';
+                pages[i].innerHTML = defaultText[i];
+            }
+        }
+    }
+};
+
+</script>
 </body>
 </html>

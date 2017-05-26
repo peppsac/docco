@@ -79,6 +79,7 @@ out in an HTML template.
 
     document = (options = {}, callback) ->
       config = configure options
+      outputs = []
 
       fs.mkdirs config.output, ->
 
@@ -87,6 +88,15 @@ out in an HTML template.
           return callback() unless fs.existsSync file
           fs.copy file, path.join(config.output, path.basename(file)), callback
         complete   = ->
+          destination = (file) ->
+            path.join(config.output, path.basename(file, path.extname(file)) + '.html')
+
+          sb = config.templateSidebar {sources: config.sources, css: path.basename(config.css),
+            outputs, path, destination,}
+
+          for output in outputs
+            fs.writeFileSync output.dest, output.content.replace('REPLACE_ME_WITH_SIDE_BAR_FILE_CONTENT', sb)
+
           copyAsset config.css, (error) ->
             return callback error if error
             return copyAsset config.public, callback if fs.existsSync config.public
@@ -102,7 +112,7 @@ out in an HTML template.
             code = buffer.toString()
             sections = parse source, code, config
             format source, sections, config
-            write source, sections, config
+            outputs.push write source, sections, config
             if files.length then nextFile() else complete()
 
         nextFile()
@@ -210,7 +220,7 @@ name of the source file.
         title, hasTitle, sections, path, destination,}
 
       console.log "docco: #{source} -> #{destination source}"
-      fs.writeFileSync destination(source), html
+      { dest: destination(source), content: html, title, source }
 
 
 Configuration
@@ -250,8 +260,10 @@ is only copied for the latter.
         dir = config.layout = path.join __dirname, 'resources', config.layout
         config.public       = path.join dir, 'public' if fs.existsSync path.join dir, 'public'
         config.template     = path.join dir, 'docco.jst'
+        config.templateSidebar     = path.join dir, 'docco-sidebar.jst'
         config.css          = options.css or path.join dir, 'docco.css'
       config.template = _.template fs.readFileSync(config.template).toString()
+      config.templateSidebar = _.template fs.readFileSync(config.templateSidebar).toString()
 
       if options.marked
         config.marked = JSON.parse fs.readFileSync(options.marked)
