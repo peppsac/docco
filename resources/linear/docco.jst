@@ -18,7 +18,7 @@
     <div class="page">
 
       <div class="header">
-        <% if (!hasTitle) { %>
+        <% if (hasTitle) { %>
           <% var section = sections.shift(); %>
           <%= section.docsHtml %>
           <% if (!(/^\s*$/).test(section.codeText)) { %>

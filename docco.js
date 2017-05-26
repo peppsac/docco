@@ -35,7 +35,7 @@
           path: path,
           destination: destination
         });
-        _hasTitle = true;
+        _hasTitle = false;
         _empty_sections = [];
         index = config.template({
           sources: config.sources,

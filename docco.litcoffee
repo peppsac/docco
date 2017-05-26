@@ -94,7 +94,7 @@ out in an HTML template.
           sb = config.templateSidebar {sources: config.sources, css: path.basename(config.css),
             outputs, path, destination,}
 
-          _hasTitle = true
+          _hasTitle = false
           _empty_sections = []
           index = config.template {sources: config.sources, css: path.basename(config.css), sections: _empty_sections, title: 'iTowns Documentation', hasTitle: _hasTitle,
             path, destination,}
