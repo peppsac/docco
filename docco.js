@@ -24,7 +24,7 @@
         return fs.copy(file, path.join(config.output, path.basename(file)), callback);
       };
       complete = function() {
-        var destination, j, len, output, sb;
+        var _empty_sections, _hasTitle, destination, index, j, len, output, sb;
         destination = function(file) {
           return path.join(config.output, path.basename(file, path.extname(file)) + '.html');
         };
@@ -34,6 +34,21 @@
           outputs: outputs,
           path: path,
           destination: destination
+        });
+        _hasTitle = true;
+        _empty_sections = [];
+        index = config.template({
+          sources: config.sources,
+          css: path.basename(config.css),
+          sections: _empty_sections,
+          title: 'iTowns Documentation',
+          hasTitle: _hasTitle,
+          path: path,
+          destination: destination
+        });
+        outputs.push({
+          dest: destination('index.html'),
+          content: index
         });
         for (j = 0, len = outputs.length; j < len; j++) {
           output = outputs[j];

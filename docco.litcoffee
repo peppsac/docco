@@ -94,6 +94,12 @@ out in an HTML template.
           sb = config.templateSidebar {sources: config.sources, css: path.basename(config.css),
             outputs, path, destination,}
 
+          _hasTitle = true
+          _empty_sections = []
+          index = config.template {sources: config.sources, css: path.basename(config.css), sections: _empty_sections, title: 'iTowns Documentation', hasTitle: _hasTitle,
+            path, destination,}
+          outputs.push { dest: destination('index.html'), content: index }
+
           for output in outputs
             fs.writeFileSync output.dest, output.content.replace('REPLACE_ME_WITH_SIDE_BAR_FILE_CONTENT', sb)
 
